@@ -15,6 +15,7 @@ namespace _2dGame__SpaceShooter
         PictureBox[] stars;
         int backgroundspeed;
         Random rnd;
+        int playerSpeed;
         public Form1()
         {
             InitializeComponent();
@@ -23,7 +24,8 @@ namespace _2dGame__SpaceShooter
         private void Form1_Load(object sender, EventArgs e)
         {
             backgroundspeed = 4;
-            stars = new PictureBox[10];
+            playerSpeed = 4;
+            stars = new PictureBox[15];
             rnd = new Random();
 
             for(int i = 0; i < stars.Length; i++)
@@ -73,6 +75,38 @@ namespace _2dGame__SpaceShooter
                 {
                     stars[i].Top = -stars[i].Height;
                 }
+            }
+        }
+
+        private void LeftMoveTime_Tick(object sender, EventArgs e)
+        {
+            if(Player.Left > 10)
+            {
+                Player.Left -= playerSpeed;
+            }
+        }
+
+        private void RightMoveTimer_Tick(object sender, EventArgs e)
+        {
+            if(Player.Right < 500)
+            {
+                Player.Left += playerSpeed;
+            }
+        }
+
+        private void DownMoveTimer_Tick(object sender, EventArgs e)
+        {
+            if(Player.Top < 400)
+            {
+                Player.Top += playerSpeed;
+            }
+        }
+
+        private void UpMoveTimer_Tick(object sender, EventArgs e)
+        {
+            if(Player.Top > 10)
+            {
+                Player.Top -= playerSpeed;
             }
         }
     }
