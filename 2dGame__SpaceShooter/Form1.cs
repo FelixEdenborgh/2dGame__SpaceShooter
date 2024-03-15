@@ -78,9 +78,11 @@ namespace _2dGame__SpaceShooter
             }
         }
 
-        private void LeftMoveTime_Tick(object sender, EventArgs e)
+
+        // Skötter Playern
+        private void LeftMoveTimer_Tick(object sender, EventArgs e)
         {
-            if(Player.Left > 10)
+            if (Player.Left > 10)
             {
                 Player.Left -= playerSpeed;
             }
@@ -108,6 +110,37 @@ namespace _2dGame__SpaceShooter
             {
                 Player.Top -= playerSpeed;
             }
+        }
+
+        // Kollar om spelaren har tryckt på någon av knapparna och startar timern i såfall
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Right)
+            {
+                RightMoveTimer.Start();
+            }
+            if(e.KeyCode == Keys.Left)
+            {
+                LeftMoveTimer.Start();
+            }
+            if(e.KeyCode == Keys.Down)
+            {
+                DownMoveTimer.Start();
+            }
+            if(e.KeyCode == Keys.Up)
+            {
+                UpMoveTimer.Start();
+            }
+
+        }
+
+        // Kollar om spelaren har släppt knappen
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            RightMoveTimer.Stop();
+            LeftMoveTimer.Stop();
+            DownMoveTimer.Stop();
+            UpMoveTimer.Stop();
         }
     }
 }

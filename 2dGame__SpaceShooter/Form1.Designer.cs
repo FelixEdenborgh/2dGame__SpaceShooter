@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.MoveBgTimer = new System.Windows.Forms.Timer(this.components);
             this.Player = new System.Windows.Forms.PictureBox();
-            this.LeftMoveTime = new System.Windows.Forms.Timer(this.components);
+            this.LeftMoveTimer = new System.Windows.Forms.Timer(this.components);
             this.RightMoveTimer = new System.Windows.Forms.Timer(this.components);
             this.DownMoveTimer = new System.Windows.Forms.Timer(this.components);
             this.UpMoveTimer = new System.Windows.Forms.Timer(this.components);
@@ -56,10 +56,10 @@
             this.Player.TabIndex = 0;
             this.Player.TabStop = false;
             // 
-            // LeftMoveTime
+            // LeftMoveTimer
             // 
-            this.LeftMoveTime.Interval = 5;
-            this.LeftMoveTime.Tick += new System.EventHandler(this.LeftMoveTime_Tick);
+            this.LeftMoveTimer.Interval = 5;
+            this.LeftMoveTimer.Tick += new System.EventHandler(this.LeftMoveTimer_Tick);
             // 
             // RightMoveTimer
             // 
@@ -90,6 +90,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Space Shooter";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.Player)).EndInit();
             this.ResumeLayout(false);
 
@@ -99,7 +101,7 @@
 
         private System.Windows.Forms.Timer MoveBgTimer;
         private System.Windows.Forms.PictureBox Player;
-        private System.Windows.Forms.Timer LeftMoveTime;
+        private System.Windows.Forms.Timer LeftMoveTimer;
         private System.Windows.Forms.Timer RightMoveTimer;
         private System.Windows.Forms.Timer DownMoveTimer;
         private System.Windows.Forms.Timer UpMoveTimer;
