@@ -7,11 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WMPLib;
 
 namespace _2dGame__SpaceShooter
 {
     public partial class Form1 : Form
     {
+        // Media
+        WindowsMediaPlayer gameMedia;
+        WindowsMediaPlayer shootgMedia;
+
         PictureBox[] stars;
         int backgroundspeed;
         Random rnd;
@@ -45,11 +50,25 @@ namespace _2dGame__SpaceShooter
                 this.Controls.Add(munitions[i]);
             }
 
+            // Creat WMP
+            gameMedia = new WindowsMediaPlayer();
+            shootgMedia = new WindowsMediaPlayer();
 
+            // Load all songs
+            gameMedia.URL = "songs\\GameSong.mp3";
+            shootgMedia.URL = "songs\\shoot.mp3";
 
+            // Setup Songs Settings
+            gameMedia.settings.setMode("loop", true);
+            gameMedia.settings.volume = 5;
+            shootgMedia.settings.volume = 1;
 
+            // Star
             stars = new PictureBox[15];
             rnd = new Random();
+
+            // När spelet startar
+            gameMedia.controls.play();
 
             for(int i = 0; i < stars.Length; i++)
             {
@@ -171,6 +190,10 @@ namespace _2dGame__SpaceShooter
         // Det kommer fortsätta så länge timmern spelas
         private void MoveMunitionTimer_Tick(object sender, EventArgs e)
         {
+            // Ljudet för skotten
+            shootgMedia.controls.play();
+
+
             for(int i = 0; i < munitions.Length; i++)
             {
                 if (munitions[i].Top > 0)
