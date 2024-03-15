@@ -37,6 +37,7 @@
             // 
             this.MoveBgTimer.Enabled = true;
             this.MoveBgTimer.Interval = 10;
+            this.MoveBgTimer.Tick += new System.EventHandler(this.MoveBgTimer_Tick);
             // 
             // Form1
             // 

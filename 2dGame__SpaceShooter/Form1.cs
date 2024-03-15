@@ -48,7 +48,25 @@ namespace _2dGame__SpaceShooter
 
         private void MoveBgTimer_Tick(object sender, EventArgs e)
         {
+            for(int i = 0; i < stars.Length/2;i++) 
+            {
+                stars[i].Top += backgroundspeed;
 
+                if (stars[i].Top >= this.Height)
+                {
+                    stars[i].Top = -stars[i].Height;
+                }
+            }
+
+            for(int i = stars.Length / 2; i < stars.Length;i++)
+            {
+                stars[i].Top += backgroundspeed -2;
+
+                if (stars[i].Top >= this.Height)
+                {
+                    stars[i].Top = -stars[i].Height;
+                }
+            }
         }
     }
 }
