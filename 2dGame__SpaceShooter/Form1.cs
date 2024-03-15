@@ -56,16 +56,19 @@ namespace _2dGame__SpaceShooter
             {
                 stars[i].Top += backgroundspeed;
 
+                // Kollar så att när de når slutet av skärmen att de startar om uppeifrån igen
                 if (stars[i].Top >= this.Height)
                 {
                     stars[i].Top = -stars[i].Height;
                 }
             }
 
+            // Dess stärnor är lite segare
             for(int i = stars.Length / 2; i < stars.Length;i++)
             {
                 stars[i].Top += backgroundspeed -2;
 
+                // Kollar så att när de når slutet av skärmen att de startar om uppeifrån igen
                 if (stars[i].Top >= this.Height)
                 {
                     stars[i].Top = -stars[i].Height;
