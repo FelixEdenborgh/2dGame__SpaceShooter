@@ -28,8 +28,10 @@ namespace _2dGame__SpaceShooter
 
             for(int i = 0; i < stars.Length; i++)
             {
+                // lägger stjärnor i Pictureboxen
                 stars[i] = new PictureBox();
                 stars[i].BorderStyle = BorderStyle.None;
+                // Ger dem sedan en random location på kartan
                 stars[i].Location = new Point(rnd.Next(20, 500), rnd.Next(-10, 400));
                 if(i % 2 == 1)
                 {
@@ -46,8 +48,10 @@ namespace _2dGame__SpaceShooter
             }
         }
 
+        // skötter timern
         private void MoveBgTimer_Tick(object sender, EventArgs e)
         {
+            // Några stjärnor rör sig snabbare en andra
             for(int i = 0; i < stars.Length/2;i++) 
             {
                 stars[i].Top += backgroundspeed;
