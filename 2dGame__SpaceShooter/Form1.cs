@@ -16,6 +16,9 @@ namespace _2dGame__SpaceShooter
         int backgroundspeed;
         Random rnd;
         int playerSpeed;
+
+        PictureBox[] munitions; //ammo
+        int MunitionSpeed;
         public Form1()
         {
             InitializeComponent();
@@ -25,6 +28,26 @@ namespace _2dGame__SpaceShooter
         {
             backgroundspeed = 4;
             playerSpeed = 4;
+
+            MunitionSpeed = 20;
+            munitions = new PictureBox[3];
+            // Load Images för ammo
+            Image munition = Image.FromFile(@"C:\Users\FelixEdenborgh\source\repos\CSharp\2dGame__SpaceShooter\2dGame__SpaceShooter\bin\Debug\asserts\munition.png");
+
+
+            for (int i = 0; i < munitions.Length; i++)
+            {
+                munitions[i] = new PictureBox();
+                munitions[i].Size = new Size(8, 8);
+                munitions[i].Image = munition;
+                munitions[i].SizeMode = PictureBoxSizeMode.Zoom;
+                munitions[i].BorderStyle = BorderStyle.None;
+                this.Controls.Add(munitions[i]);
+            }
+
+
+
+
             stars = new PictureBox[15];
             rnd = new Random();
 
@@ -90,7 +113,7 @@ namespace _2dGame__SpaceShooter
 
         private void RightMoveTimer_Tick(object sender, EventArgs e)
         {
-            if(Player.Right < 500)
+            if(Player.Right < 580)
             {
                 Player.Left += playerSpeed;
             }
@@ -141,6 +164,26 @@ namespace _2dGame__SpaceShooter
             LeftMoveTimer.Stop();
             DownMoveTimer.Stop();
             UpMoveTimer.Stop();
+        }
+
+        // ammo handler
+        // En simple forloop som går igenom ammo arrayn, när ammon går i topen av skärmen så går de tillbaka till där Playern är och börjar om
+        // Det kommer fortsätta så länge timmern spelas
+        private void MoveMunitionTimer_Tick(object sender, EventArgs e)
+        {
+            for(int i = 0; i < munitions.Length; i++)
+            {
+                if (munitions[i].Top > 0)
+                {
+                    munitions[i].Visible = true;
+                    munitions[i].Top -= MunitionSpeed;
+                }
+                else
+                {
+                    munitions[i].Visible = false;
+                    munitions[i].Location = new Point(Player.Location.X + 20, Player.Location.Y - i * 30);
+                }
+            }
         }
     }
 }
