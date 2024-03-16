@@ -16,6 +16,7 @@ namespace _2dGame__SpaceShooter
         // Media
         WindowsMediaPlayer gameMedia;
         WindowsMediaPlayer shootgMedia;
+        WindowsMediaPlayer explosion;
 
         PictureBox[] stars;
         int backgroundspeed;
@@ -24,6 +25,14 @@ namespace _2dGame__SpaceShooter
 
         PictureBox[] munitions; //ammo
         int MunitionSpeed;
+
+        PictureBox[] enemies;
+        int enemiSpeed;
+
+        PictureBox[] enemiesMunition;
+        int enemiesMuntitionSpeed;
+
+
         public Form1()
         {
             InitializeComponent();
@@ -33,11 +42,47 @@ namespace _2dGame__SpaceShooter
         {
             backgroundspeed = 4;
             playerSpeed = 4;
+            enemiSpeed = 4;
+            enemiesMuntitionSpeed = 4;
 
             MunitionSpeed = 20;
             munitions = new PictureBox[3];
             // Load Images för ammo
             Image munition = Image.FromFile(@"C:\Users\FelixEdenborgh\source\repos\CSharp\2dGame__SpaceShooter\2dGame__SpaceShooter\bin\Debug\asserts\munition.png");
+
+            //Enemys
+            //Load Images for Enemys
+            Image enemi1 = Image.FromFile("asserts\\E1.png");
+            Image enemi2 = Image.FromFile("asserts\\E2.png");
+            Image enemi3 = Image.FromFile("asserts\\E3.png");
+            Image boss1 = Image.FromFile("asserts\\Boss1.png");
+            Image boss2 = Image.FromFile("asserts\\Boss2.png");
+
+            enemies = new PictureBox[10];
+
+            //Initalise EnemyPictureBoxes
+            for(int i = 0; i < enemies.Length; i++)
+            {
+                enemies[i] = new PictureBox();
+                enemies[i].Size = new Size(40, 40);
+                enemies[i].SizeMode = PictureBoxSizeMode.Zoom;
+                enemies[i].BorderStyle = BorderStyle.None;
+                enemies[i].Visible = false;
+                this.Controls.Add(enemies[i]);
+                enemies[i].Location = new Point((i + 1) * 50, -50);
+            }
+
+            enemies[0].Image = boss1;
+            enemies[1].Image = enemi2;
+            enemies[2].Image = enemi3;
+            enemies[3].Image = enemi3;
+            enemies[4].Image = enemi1;
+            enemies[5].Image = enemi3;
+            enemies[6].Image = enemi2;
+            enemies[7].Image = enemi3;
+            enemies[8].Image = enemi2;
+            enemies[9].Image = boss2;
+
 
 
             for (int i = 0; i < munitions.Length; i++)
@@ -53,15 +98,20 @@ namespace _2dGame__SpaceShooter
             // Creat WMP
             gameMedia = new WindowsMediaPlayer();
             shootgMedia = new WindowsMediaPlayer();
+            explosion = new WindowsMediaPlayer();
 
             // Load all songs
             gameMedia.URL = "songs\\GameSong.mp3";
             shootgMedia.URL = "songs\\shoot.mp3";
+            explosion.URL = "songs\\boom.mp3";
 
             // Setup Songs Settings
             gameMedia.settings.setMode("loop", true);
             gameMedia.settings.volume = 5;
             shootgMedia.settings.volume = 1;
+            explosion.settings.volume = 6;
+
+
 
             // Star
             stars = new PictureBox[15];
@@ -90,6 +140,23 @@ namespace _2dGame__SpaceShooter
 
                 this.Controls.Add(stars[i]);
             }
+
+            // Enemies Munition
+            enemiesMunition = new PictureBox[10];
+
+            for(int i = 0; i <= enemiesMunition.Length; i++)
+            {
+                enemiesMunition[i] = new PictureBox();
+                enemiesMunition[i].Size = new Size(2, 25);
+                enemiesMunition[i].Visible = false;
+                enemiesMunition[i].BackColor = Color.Yellow;
+                int x = rnd.Next(0, 10);
+                enemiesMunition[i].Location = new Point(enemies[x].Location.X, enemies[x].Location.Y);
+                this.Controls.Add(enemiesMunition[i]);
+            }
+
+            gameMedia.controls.play();
+
         }
 
         // skötter timern
@@ -200,6 +267,8 @@ namespace _2dGame__SpaceShooter
                 {
                     munitions[i].Visible = true;
                     munitions[i].Top -= MunitionSpeed;
+
+                    Collision();
                 }
                 else
                 {
@@ -207,6 +276,66 @@ namespace _2dGame__SpaceShooter
                     munitions[i].Location = new Point(Player.Location.X + 20, Player.Location.Y - i * 30);
                 }
             }
+        }
+
+        private void MoveEnemysTimer_Tick(object sender, EventArgs e)
+        {
+            MoveEnemies(enemies, enemiSpeed);
+        }
+
+        private void MoveEnemies(PictureBox[] array, int speed)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i].Visible = true;
+                array[i].Top += speed;
+
+                if (array[i].Top > this.Height)
+                {
+                    array[i].Location = new Point((i + 1) * 50, -200);
+                }
+            }
+        }
+
+        public void Collision()
+        {
+            for(int i = 0; i < enemies.Length; i++)
+            {
+                if (munitions[0].Bounds.IntersectsWith(enemies[i].Bounds) 
+                    || munitions[1].Bounds.IntersectsWith(enemies[i].Bounds) || munitions[2].Bounds.IntersectsWith(enemies[i].Bounds))
+                {
+                    explosion.controls.play();
+                    enemies[i].Location = new Point((i + 1)*50, -100);
+                }
+
+                if (Player.Bounds.IntersectsWith(enemies[i].Bounds))
+                {
+                    explosion.settings.volume = 30;
+                    explosion.controls.play();
+                    Player.Visible = false;
+                    Gameover("");
+                }
+            }
+        }
+
+        private void Gameover(String str)
+        {
+            gameMedia.controls.stop();
+            StopTimers();
+        }
+
+        private void StopTimers()
+        {
+            MoveBgTimer.Stop();
+            MoveEnemysTimer.Stop();
+            MoveMunitionTimer.Stop();
+        }
+
+        private void StartTimer()
+        {
+            MoveBgTimer.Start();
+            MoveEnemysTimer.Start();
+            MoveMunitionTimer.Start();
         }
     }
 }
