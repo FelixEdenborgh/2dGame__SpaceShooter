@@ -32,6 +32,12 @@ namespace _2dGame__SpaceShooter
         PictureBox[] enemiesMunition;
         int enemiesMuntitionSpeed;
 
+        int score;
+        int level;
+        int deficulty;
+        bool pause;
+        bool gameIsOver;
+
 
         public Form1()
         {
@@ -44,6 +50,12 @@ namespace _2dGame__SpaceShooter
             playerSpeed = 4;
             enemiSpeed = 4;
             enemiesMuntitionSpeed = 4;
+
+            pause = false;
+            gameIsOver = false;
+            score = 0;
+            level = 1;
+            deficulty = 9; // går bakot från 9 som är lättaste till 0 som är svåraste
 
             MunitionSpeed = 20;
             munitions = new PictureBox[3];
@@ -225,23 +237,25 @@ namespace _2dGame__SpaceShooter
         // Kollar om spelaren har tryckt på någon av knapparna och startar timern i såfall
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Right)
+            if (!pause)
             {
-                RightMoveTimer.Start();
+                if (e.KeyCode == Keys.Right)
+                {
+                    RightMoveTimer.Start();
+                }
+                if (e.KeyCode == Keys.Left)
+                {
+                    LeftMoveTimer.Start();
+                }
+                if (e.KeyCode == Keys.Down)
+                {
+                    DownMoveTimer.Start();
+                }
+                if (e.KeyCode == Keys.Up)
+                {
+                    UpMoveTimer.Start();
+                }
             }
-            if(e.KeyCode == Keys.Left)
-            {
-                LeftMoveTimer.Start();
-            }
-            if(e.KeyCode == Keys.Down)
-            {
-                DownMoveTimer.Start();
-            }
-            if(e.KeyCode == Keys.Up)
-            {
-                UpMoveTimer.Start();
-            }
-
         }
 
         // Kollar om spelaren har släppt knappen
@@ -251,6 +265,31 @@ namespace _2dGame__SpaceShooter
             LeftMoveTimer.Stop();
             DownMoveTimer.Stop();
             UpMoveTimer.Stop();
+
+            // kollar om spelet är på eller ej
+            if(e.KeyCode == Keys.Space)
+            {
+                if (!gameIsOver)
+                {
+                    if (pause)
+                    {
+                        StartTimer();
+                        label1.Visible = false;
+                        gameMedia.controls.play();
+                        pause = false;
+                    }
+                    else
+                    {
+                        // Test för pause
+                        label1.Location = new Point(this.Width / 2 - 120, 150);
+                        label1.Text = "PAUSED";
+                        label1.Visible = true;
+                        gameMedia.controls.pause();
+                        StopTimers();
+                        pause = true;
+                    }
+                }
+            }
         }
 
         // ammo handler
@@ -306,6 +345,29 @@ namespace _2dGame__SpaceShooter
                     || munitions[1].Bounds.IntersectsWith(enemies[i].Bounds) || munitions[2].Bounds.IntersectsWith(enemies[i].Bounds))
                 {
                     explosion.controls.play();
+
+                    score += 1;
+                    scorelbl.Text = (score < 10) ? "0" + score.ToString() : score.ToString();
+
+                    // kollar om score är 30 poäng isåfall går den upp till nästa level. 
+                    // Liknande varje 30 poäng.
+                    if(score % 30 == 0)
+                    {
+                        level += 1;
+                        levellbl.Text = (level < 10) ? "0" + level.ToString() : level.ToString();
+
+                        if(enemiSpeed <= 10 && enemiesMuntitionSpeed <= 10 && deficulty >= 0) 
+                        {
+                            deficulty--;
+                            enemiSpeed++;
+                            enemiesMuntitionSpeed++;
+                        }
+
+                        if(level  == 10)
+                        {
+                            Gameover("NICE DONE");
+                        }
+                    }
                     enemies[i].Location = new Point((i + 1)*50, -100);
                 }
 
@@ -321,6 +383,12 @@ namespace _2dGame__SpaceShooter
 
         private void Gameover(String str)
         {
+            label1.Text = str;
+            label1.Location = new Point(120, 120);
+            label1.Visible = true;
+            Replaybtn.Visible = true;
+            Exitbtn.Visible = true;
+
             gameMedia.controls.stop();
             StopTimers();
         }
@@ -374,6 +442,18 @@ namespace _2dGame__SpaceShooter
                     Gameover("Game Over");
                 }
             }
+        }
+
+        private void Replaybtn_Click(object sender, EventArgs e)
+        {
+            this.Controls.Clear();
+            InitializeComponent();
+            Form1_Load(e, e);
+        }
+
+        private void Exitbtn_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(1);
         }
     }
 }
