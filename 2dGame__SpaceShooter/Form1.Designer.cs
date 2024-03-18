@@ -94,6 +94,7 @@
             // 
             this.EnemysMutionTimer.Enabled = true;
             this.EnemysMutionTimer.Interval = 20;
+            this.EnemysMutionTimer.Tick += new System.EventHandler(this.EnemysMutionTimer_Tick);
             // 
             // Form1
             // 

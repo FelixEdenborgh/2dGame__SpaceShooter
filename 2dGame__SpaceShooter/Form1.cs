@@ -144,14 +144,15 @@ namespace _2dGame__SpaceShooter
             // Enemies Munition
             enemiesMunition = new PictureBox[10];
 
-            for(int i = 0; i <= enemiesMunition.Length; i++)
+            for(int i = 0; i < enemiesMunition.Length; i++)
             {
                 enemiesMunition[i] = new PictureBox();
                 enemiesMunition[i].Size = new Size(2, 25);
                 enemiesMunition[i].Visible = false;
                 enemiesMunition[i].BackColor = Color.Yellow;
                 int x = rnd.Next(0, 10);
-                enemiesMunition[i].Location = new Point(enemies[x].Location.X, enemies[x].Location.Y);
+                // skötter hur skotten ska gå ifrån fienderna -20 blir i mitten av fienden
+                enemiesMunition[i].Location = new Point(enemies[x].Location.X, enemies[x].Location.Y - 20);
                 this.Controls.Add(enemiesMunition[i]);
             }
 
@@ -329,6 +330,7 @@ namespace _2dGame__SpaceShooter
             MoveBgTimer.Stop();
             MoveEnemysTimer.Stop();
             MoveMunitionTimer.Stop();
+            EnemysMutionTimer.Stop();
         }
 
         private void StartTimer()
@@ -336,6 +338,42 @@ namespace _2dGame__SpaceShooter
             MoveBgTimer.Start();
             MoveEnemysTimer.Start();
             MoveMunitionTimer.Start();
+            EnemysMutionTimer.Start();
+        }
+
+        private void EnemysMutionTimer_Tick(object sender, EventArgs e)
+        {
+            for(int i = 0; i < munitions.Length; i++)
+            {
+                if (enemiesMunition[i].Top < this.Height)
+                {
+                    enemiesMunition[i].Visible = true;
+                    enemiesMunition[i].Top += enemiesMuntitionSpeed;
+
+                    CollisionWithEnemisMunition();
+                }
+                else
+                {
+                    enemiesMunition[i].Visible = false;
+                    int x = rnd.Next(0, 10);
+                    enemiesMunition[i].Location = new Point(enemies[x].Location.X + 20, enemies[x].Location.Y + 30);
+                }
+            }
+        }
+
+        private void CollisionWithEnemisMunition()
+        {
+            for(int i = 0; i < enemiesMunition.Length; i++)
+            {
+                if (enemiesMunition[i].Bounds.IntersectsWith(Player.Bounds))
+                {
+                    enemiesMunition[i].Visible = false;
+                    explosion.settings.volume = 30;
+                    explosion.controls.play();
+                    Player.Visible = false;
+                    Gameover("Game Over");
+                }
+            }
         }
     }
 }
